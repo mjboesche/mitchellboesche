@@ -4,9 +4,9 @@ export const site = {
   initials: 'MB',
   description:
     'Data engineer in Minnesota. Writing about SQL, Python, Snowflake and side projects.',
-  email: 'you@example.com', // TODO: your public contact email
-  github: 'https://github.com/YOUR-USERNAME', // TODO
-  linkedin: 'https://www.linkedin.com/in/YOUR-HANDLE', // TODO
+  email: 'mjboesche123@gmail.com.com',
+  github: 'https://github.com/mjboesche',
+  linkedin: 'https://www.linkedin.com/in/mitchellboesche',
 };
 
 export type Project = {
