@@ -1,0 +1,134 @@
+---
+import Base from '../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+import { site, projects } from '../data/site';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+// Drafts show while you run `npm run dev`, never on the live site.
+const posts = (await getCollection('blog', ({ data }) => import.meta.env.DEV || !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 3);
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
+---
+
+<Base>
+  <section class="hero" id="top">
+    <div class="hero-copy">
+      <p class="eyebrow">Data engineer · Minnesota</p>
+      <h1>I build the pipes that turn messy data into answers.</h1>
+      <p class="lede">
+        Hi, I'm Mitchell. I work in SQL, Python and Snowflake by day, and spend my evenings building
+        side projects that are usually about football, money or both. This is where I write it all down.
+      </p>
+      <div class="actions">
+        <a class="btn btn-primary" href={`${base}/blog/`}>
+          Read the blog
+          <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg>
+        </a>
+        <a class="btn btn-secondary" href="#projects">See projects</a>
+      </div>
+    </div>
+
+    <div class="terminal" role="img" aria-label="A SQL query returning Mitchell's profile: data engineer in Minnesota, working in SQL, Python and Snowflake.">
+      <div class="dots" aria-hidden="true"><span></span><span></span><span></span></div>
+      <div class="c">-- whoami</div>
+      <div><span class="k">select</span> *</div>
+      <div><span class="k">from</span> mitchell.profile</div>
+      <div><span class="k">where</span> is_current = <span class="v">true</span>;</div>
+      <hr />
+      <dl class="rows">
+        <dt>role</dt><dd>data engineer</dd>
+        <dt>based_in</dt><dd>minnesota</dd>
+        <dt>stack</dt><dd>sql, python, snowflake</dd>
+        <dt>side_proj</dt><dd>nfl.duckdb</dd>
+        <dt>off_hours</dt><dd>fishing, grilling, garden</dd>
+      </dl>
+      <div class="c" style="padding-top: 18px">(5 rows)</div>
+    </div>
+  </section>
+
+  <section class="section" id="writing">
+    <div class="section-head">
+      <h2>Recent writing</h2>
+      <a href={`${base}/blog/`}>All posts →</a>
+    </div>
+    {posts.length === 0 ? (
+      <p class="empty">First post coming soon.</p>
+    ) : (
+      <ul class="posts">
+        {posts.map((post) => (
+          <li>
+            <a class="post-row" href={`${base}/blog/${post.id}/`}>
+              <span class="post-meta">
+                {fmt(post.data.pubDate)}{post.data.tag && ` · ${post.data.tag}`}
+              </span>
+              <span class="post-main">
+                <span class="post-title">
+                  {post.data.title}
+                  {post.data.draft && <span class="draft-badge">Draft</span>}
+                </span>
+                <span class="post-desc">{post.data.description}</span>
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    )}
+  </section>
+
+  <section class="section" id="projects">
+    <div class="section-head"><h2>Projects</h2></div>
+    <div class="project-grid">
+      {projects.map((p) => (
+        <a class="project-card" href={p.href}>
+          {p.icon === 'db' && (
+            <svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"></ellipse><path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5"></path><path d="M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"></path></svg>
+          )}
+          {p.icon === 'chart' && (
+            <svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="m7 15 4-4 3 3 5-6"></path></svg>
+          )}
+          {p.icon === 'home' && (
+            <svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 12 4l9 7"></path><path d="M5 10v10h14V10"></path><path d="M12 13v5"></path><path d="M10 15h4"></path></svg>
+          )}
+          <span class="project-title">{p.title}</span>
+          <span class="project-blurb">{p.blurb}</span>
+          <span class="project-tags">{p.tags}</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="section about" id="about">
+    <h2>About</h2>
+    <div class="about-body">
+      <p>
+        I'm a data engineer based in Minnesota. Most of my work is data architecture: modeling
+        identities across systems, keeping history trustworthy, and making warehouses that analysts
+        actually enjoy querying.
+      </p>
+      <p>
+        Away from the keyboard you'll find me fishing, at the grill, or out in the garden. This site
+        is built with Astro and hosted on GitHub Pages.
+      </p>
+    </div>
+  </section>
+
+  <section class="contact" id="contact">
+    <div class="contact-copy">
+      <h2>Let's talk data.</h2>
+      <p>Questions about a post, a pipeline problem, or just want to compare fantasy rankings? Reach out.</p>
+    </div>
+    <div class="contact-links">
+      <a class="btn btn-light" href={`mailto:${site.email}`}>{site.email}</a>
+      <a class="icon-btn" href={site.github} aria-label="GitHub">
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"></path></svg>
+      </a>
+      <a class="icon-btn" href={site.linkedin} aria-label="LinkedIn">
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+      </a>
+    </div>
+  </section>
+</Base>
