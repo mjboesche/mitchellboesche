@@ -4,7 +4,7 @@ export const site = {
   initials: 'MB',
   description:
     'Data engineer in Minnesota. Writing about SQL, Python, Snowflake and side projects.',
-  email: 'mjboesche123@gmail.com.com',
+  email: 'mjboesche123@gmail.com',
   github: 'https://github.com/mjboesche',
   linkedin: 'https://www.linkedin.com/in/mitchellboesche',
 };
